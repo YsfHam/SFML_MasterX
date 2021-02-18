@@ -1,3 +1,6 @@
 [submodule "SFML_MasterX/libs/SFML"]
 	path = SFML_MasterX/libs/SFML
 	url = https://github.com/SFML/SFML.git
+[submodule "SFML_MasterX/libs/spdlog"]
+	path = SFML_MasterX/libs/spdlog
+	url = https://github.com/gabime/spdlog.git
