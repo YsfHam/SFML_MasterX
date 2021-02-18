@@ -1,0 +1,27 @@
+#! /bin/bash
+
+sfml_dir="SFML_MasterX/extlibs/SFML"
+cd $sfml_dir
+
+if ls /Library/Frameworks/sfml* 2> /dev/null 1> /dev/null; then
+    echo "You have alrady installed sfml in your machine"
+    echo "If you want to override your current version please delete sfml frameworks"
+    exit 0
+fi 
+f test -d "build"; then
+   echo "SFML has been already built"
+   exit 0
+fi
+
+mkdir build
+cd build
+cmake .. -D SFML_BUILD_FRAMEWORKS=TRUE
+make
+
+
+
+echo "Frameworks will be installed in /Library/Frameworks"
+sudo mv lib/* /Library/Frameworks
+sudo cp -R ../extlibs/libs-osx/Frameworks/* /Library/Frameworks
+
+cd .. && rm -rf build
