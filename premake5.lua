@@ -10,8 +10,8 @@ configurations
 startproject "Sandbox"
 
 Includes={}
-Includes["SFML"]="%{wks.location}/SFML_MasterX/extlibs/SFML/include"
-Includes["spdlog"]="%{wks.location}/SFML_MasterX/extlibs/spdlog/include"
+Includes["SFML"]="%{wks.location}/SFML_MasterX/libs/SFML/include"
+Includes["spdlog"]="%{wks.location}/SFML_MasterX/libs/spdlog/include"
 
 include "SFML_MasterX"
 include "Sandbox"

@@ -12,8 +12,6 @@ project "SFML_MasterX"
 		"src/**.hpp"
 
 	}
-
-	removefiles "src/PCH/sfmxpch.cpp"
 	
 	includedirs
 	{
@@ -21,13 +19,16 @@ project "SFML_MasterX"
 		"%{Includes.spdlog}",
 		"src"
 	}
-
+	
 	pchheader "PCH/sfmxpch.hpp"
-
+	
 	--[plateform dependece configurations]--
 	filter "action:vs*"
 		pchsource "PCH/sfmxpch.cpp"
 		defines "MASTER_VS_COMPILER"
+
+	filter "action:gmake*"
+		removefiles "src/PCH/sfmxpch.cpp"
 
 	filter "system:macosx"
 		links
