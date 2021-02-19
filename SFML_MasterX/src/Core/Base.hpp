@@ -26,3 +26,9 @@ assert(cond);\
 #define MASTER_ASSERT(cond, ...)
 
 #endif
+
+namespace masterX
+{
+    template<typename T>
+    using Ref = std::shared_ptr<T>;
+}

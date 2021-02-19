@@ -1,17 +1,19 @@
 #include <Main.hpp>
 #include <SFML_MasterX.hpp>
-#if defined(MASTER_MACOSX)
-    #define TITLE "SFML MACOSX"
-#else
-    #define TITLE "Hello SFML"
-#endif
+
 
 class SandBoxApp : public masterX::Application
 {
 public:
     SandBoxApp()
     {
-        m_window = new sf::RenderWindow(sf::VideoMode(1024, 900), TITLE);
+    }
+
+    void initWindowProps(masterX::WindowProps& props) override
+    {
+        props.width = 800;
+        props.height = 700;
+        props.title = "Hello SFML";
     }
 
 };

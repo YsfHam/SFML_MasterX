@@ -1,6 +1,9 @@
 #pragma once
 #include <PCH/sfmxpch.hpp>
 
+#include "WindowHolder.hpp"
+#include "Base.hpp"
+
 namespace masterX
 {
     class Application
@@ -12,8 +15,9 @@ namespace masterX
         void run();
         static Application* get() { return instance; }
     protected:
-        sf::RenderWindow *m_window;
+        virtual void initWindowProps(WindowProps& props) = 0;
     private:
+        Ref<WindowHolder> m_window;
         static Application *instance;
     };
 
