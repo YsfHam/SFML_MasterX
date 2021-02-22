@@ -3,6 +3,7 @@
 
 #include "WindowHolder.hpp"
 #include "Base.hpp"
+#include "LayerStack.hpp"
 
 namespace masterX
 {
@@ -13,12 +14,16 @@ namespace masterX
         virtual ~Application();
 
         void run();
-        static Application* get() { return instance; }
+        void pushLayer(Layer *layer);
+        void onEvent();
+        void onUpdate();
+        static Application* get() { return s_instance; }
     protected:
         virtual void initWindowProps(WindowProps& props) = 0;
     private:
         Ref<WindowHolder> m_window;
-        static Application *instance;
+        LayerStack m_layerStack;
+        static Application *s_instance;
     };
 
     Application* createApplication();

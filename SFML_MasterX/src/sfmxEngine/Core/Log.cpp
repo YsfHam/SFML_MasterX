@@ -15,5 +15,7 @@ namespace masterX
 
         s_coreLogger = spdlog::stdout_color_mt("CORE");
         s_clientLogger = spdlog::stdout_color_mt("CLIENT");
+
+        spdlog::set_level(spdlog::level::trace);
     }
 }

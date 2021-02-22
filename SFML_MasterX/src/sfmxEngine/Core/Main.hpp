@@ -1,6 +1,6 @@
 #pragma once
-#include "Core/Application.hpp"
-#include "Core/Base.hpp"
+#include "sfmxEngine/Core/Application.hpp"
+#include "sfmxEngine/Core/Base.hpp"
 
 extern masterX::Application* masterX::createApplication();
 
