@@ -4,6 +4,7 @@
 #include "WindowHolder.hpp"
 #include "Base.hpp"
 #include "LayerStack.hpp"
+#include "sfmxEngine/Renderer/Renderer.hpp"
 
 namespace masterX
 {
@@ -14,15 +15,24 @@ namespace masterX
         virtual ~Application();
 
         void run();
-        void pushLayer(Layer *layer);
-        void onEvent();
-        void onUpdate();
+
+        uint32_t windowWidth() const;
+        uint32_t windowHeight() const;
+        
         static Application* get() { return s_instance; }
+
     protected:
         virtual void initWindowProps(WindowProps& props) = 0;
+        void pushLayer(Layer *layer);
+
+    private:
+        void onEvent();
+        void onUpdate();
+
     private:
         Ref<WindowHolder> m_window;
         LayerStack m_layerStack;
+        float m_deltaTime;
         static Application *s_instance;
     };
 

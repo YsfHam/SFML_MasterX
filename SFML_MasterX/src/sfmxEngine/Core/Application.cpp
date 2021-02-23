@@ -12,7 +12,7 @@ namespace masterX
 
 
     Application::Application()
-        : m_window(nullptr)
+        : m_window(nullptr), m_deltaTime(0.0f)
     {
         MASTER_CORE_ASSERT(s_instance == nullptr, "The application is already lanched");
         s_instance = this;
@@ -20,6 +20,16 @@ namespace masterX
     }
     Application::~Application()
     {
+    }
+
+    uint32_t Application::windowWidth() const
+    {
+        return m_window->get().getSize().x;
+    }
+
+    uint32_t Application::windowHeight() const
+    {
+        return m_window->get().getSize().y;
     }
 
     void Application::run()
@@ -30,12 +40,14 @@ namespace masterX
 
         MASTER_CORE_ASSERT(m_window, "The window is not initialised");
 
+        Renderer::init(m_window);
+        sf::Clock clock;
         while (m_window->get().isOpen())
         {
             onEvent();
+            m_deltaTime = clock.restart().asSeconds();
             onUpdate();
-            m_window->get().clear(sf::Color(200, 50, 50));
-            m_window->get().display();
+            Renderer::display();
         }
     }
 
@@ -65,6 +77,6 @@ namespace masterX
     void Application::onUpdate()
     {
         for (Layer *layer : m_layerStack)
-            layer->onUpdate();
+            layer->onUpdate(m_deltaTime);
     }
 }

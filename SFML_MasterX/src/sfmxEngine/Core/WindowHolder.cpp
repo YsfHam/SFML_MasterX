@@ -10,6 +10,8 @@ namespace masterX
     {
         m_window = new sf::RenderWindow(sf::VideoMode(props.width, props.height), 
                     props.title, props.style, props.settings);
+
+        m_window->setFramerateLimit(props.frameRate);
     }
     WindowHolder::WindowHolder(sf::WindowHandle handle, const sf::ContextSettings& settings)
     : m_window(nullptr)

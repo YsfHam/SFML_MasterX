@@ -12,6 +12,7 @@ namespace masterX
         std::string title;
         uint32_t style = sf::Style::Default;
         sf::ContextSettings settings;
+        float frameRate = 60.f;
     };
 
     class WindowHolder

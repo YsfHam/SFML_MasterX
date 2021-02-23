@@ -13,7 +13,7 @@ namespace masterX
         virtual void onDetach() {}
         // This function handle events, returns true if a event is handled false otherwise
         virtual bool onEvent(sf::Event& event) { return false; }
-        virtual void onUpdate() {}
+        virtual void onUpdate(float dt) {}
     private:
     };
 }
