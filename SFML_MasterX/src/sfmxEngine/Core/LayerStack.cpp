@@ -1,3 +1,7 @@
+#ifdef MASTER_VS_COMPILER
+#include <PCH/sfmxpch.hpp>
+#endif
+
 #include "LayerStack.hpp"
 #include "Base.hpp"
 

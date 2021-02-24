@@ -26,6 +26,10 @@ namespace masterX
 
         static void display();
 
+        static void setDrawingView(const sf::View& view);
+        static void setDrawingView(const sf::FloatRect& drawingArea);
+        static void setDrawingView(float startX, float startY, float width, float height);
+
     private:
         static Ref<WindowHolder> s_window;
         static sf::Color s_clearColor;

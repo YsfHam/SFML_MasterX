@@ -5,65 +5,77 @@
 class TestLayer : public masterX::Layer
 {
 public:
+    TestLayer()
+        :
+        m_cameraControler(0.5f, 100.f, 50.f)
+    {
+    }
     void onAttach() override
     {
-        MASTER_INFO("TestLayer starts {0}", ++s_counter);
-        instanceNum = s_counter;
-
         m_rect.setFillColor(sf::Color::Red);
-        m_rect.setSize(sf::Vector2f(20, 20));
+        m_rect.setSize(sf::Vector2f(20.f, 20.f));
+        m_rect.setOrigin(m_rect.getSize() / 2.f);
+
+        float winWidth = masterX::Application::get()->windowWidth();
+        float winHeight = masterX::Application::get()->windowHeight();
+        m_rect.setPosition(winWidth / 2.f, winHeight / 2.f);
+
+        m_currentCamera = (masterX::Camera*)&m_cameraControler.getCamera();
     }
 
     void onDetach() override
     {
-        MASTER_INFO("TestLayer detached {0}", s_counter--);
     }
 
     bool onEvent(sf::Event& event) override
     {
+        bool eventHandled = false;
         if (event.type == sf::Event::KeyPressed)
         {
-            MASTER_TRACE("The instance {0} received the event", instanceNum);
+            if (event.key.code == sf::Keyboard::C)
+            {
+                if (m_currentCamera == &m_camera)
+                    m_currentCamera = (masterX::Camera*)&m_cameraControler.getCamera();
+                else
+                    m_currentCamera = &m_camera;
 
-            return true;
+                eventHandled |= true;
+            }
         }
-        return false;
+        eventHandled |= m_cameraControler.onEvent(event);
+        return eventHandled;
     }
 
     void onUpdate(float dt) override
     {
-        masterX::Renderer::setClearColor(sf::Color(20, 30, 40));
+        m_cameraControler.update(dt);
+        masterX::Renderer::setClearColor(sf::Color(20, 20, 20));
+        masterX::Renderer::setDrawingView(m_currentCamera->getView());
         masterX::Renderer::draw(m_rect);
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z))
-            m_rect.move(0, 10 * dt);
 
-        MASTER_TRACE("Frame rate {0}", 1.f / dt);
     }
 
 private:
-    static int s_counter;
-    int instanceNum;
-
     sf::RectangleShape m_rect;
+    masterX::Camera m_camera;
+    masterX::Camera *m_currentCamera;
+    masterX::CameraControler m_cameraControler;
 };
-
-int TestLayer::s_counter = 0;
 
 class SandBoxApp : public masterX::Application
 {
 public:
-    SandBoxApp()
+    void init() override
     {
         pushLayer(new TestLayer);
     }
 
-    void initWindowProps(masterX::WindowProps& props) override
+    void initProps(masterX::WindowProps& props) override
     {
-        props.width = 400;
-        props.height = 300;
-        props.title = "Hello SFML";
+        props.width = 700;
+        props.height = 500;
+        props.title = "SFML App";
     }
-
 };
 
 masterX::Application* masterX::createApplication()

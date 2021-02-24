@@ -16,10 +16,15 @@ namespace masterX
     {
         MASTER_CORE_ASSERT(s_instance == nullptr, "The application is already lanched");
         s_instance = this;
-        
     }
     Application::~Application()
     {
+    }
+
+    Application* Application::get() 
+    {
+        MASTER_CORE_ASSERT(s_instance != nullptr, "The application is not initialised yet");
+        return s_instance; 
     }
 
     uint32_t Application::windowWidth() const
@@ -34,13 +39,15 @@ namespace masterX
 
     void Application::run()
     {
-        WindowProps props;
-        initWindowProps(props);
-        m_window = std::make_shared<WindowHolder>(props);
+        MASTER_CORE_ASSERT(!m_window, "The application is already initialised !");
+        initProps(m_winProps);
+        m_window = std::make_shared<WindowHolder>(m_winProps);
 
         MASTER_CORE_ASSERT(m_window, "The window is not initialised");
-
         Renderer::init(m_window);
+
+        init();
+        
         sf::Clock clock;
         while (m_window->get().isOpen())
         {
@@ -64,7 +71,7 @@ namespace masterX
         while (m_window->get().pollEvent(event))
         {
             if (event.type == sf::Event::Closed)
-                m_window->get().close();
+                onCloseEvent();
 
             for (auto it = m_layerStack.rbegin(); it != m_layerStack.rend(); it++)
             {
@@ -78,5 +85,10 @@ namespace masterX
     {
         for (Layer *layer : m_layerStack)
             layer->onUpdate(m_deltaTime);
+    }
+
+    void Application::onCloseEvent()
+    {
+        m_window->get().close();
     }
 }

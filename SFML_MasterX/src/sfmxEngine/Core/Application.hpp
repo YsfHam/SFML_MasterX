@@ -19,18 +19,22 @@ namespace masterX
         uint32_t windowWidth() const;
         uint32_t windowHeight() const;
         
-        static Application* get() { return s_instance; }
+        static Application* get();
 
     protected:
-        virtual void initWindowProps(WindowProps& props) = 0;
+        virtual void initProps(WindowProps& props) = 0;
+        virtual void init() = 0;
         void pushLayer(Layer *layer);
 
     private:
         void onEvent();
         void onUpdate();
 
+        void onCloseEvent();
+
     private:
         Ref<WindowHolder> m_window;
+        WindowProps m_winProps;
         LayerStack m_layerStack;
         float m_deltaTime;
         static Application *s_instance;
