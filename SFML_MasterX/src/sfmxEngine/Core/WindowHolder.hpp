@@ -1,6 +1,7 @@
 #pragma once
 
 #include <PCH/sfmxpch.hpp>
+#include "Base.hpp"
 
 namespace masterX
 {
@@ -21,10 +22,18 @@ namespace masterX
         WindowHolder(const WindowProps& props);
         WindowHolder(sf::WindowHandle handle, const sf::ContextSettings& settings = sf::ContextSettings());
 
-        ~WindowHolder() { delete m_window; }
+        Ref<sf::RenderTarget> getRenderTarget();
+        bool pollWindowEvents(sf::Event& event);
+        void close();
+        bool isOpen();
 
-        sf::RenderWindow& get();
+        uint32_t getWidth() { return m_window->getSize().x; }
+        uint32_t getHeight() { return m_window->getSize().y; }
+
+    public:
+        std::function<bool()> onCloseEvent;
+
     private:
-        sf::RenderWindow *m_window;
+        Ref<sf::RenderWindow> m_window;
     };
 }

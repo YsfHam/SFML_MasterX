@@ -3,6 +3,7 @@
 // This file will contain all global definition and types for the engine
 
 #include "Log.hpp"
+#include "Types.hpp"
 
 #ifdef MASTER_DEBUG
 #include <assert.h>
@@ -26,9 +27,3 @@ assert(cond);\
 #define MASTER_ASSERT(cond, ...)
 
 #endif
-
-namespace masterX
-{
-    template<typename T>
-    using Ref = std::shared_ptr<T>;
-}

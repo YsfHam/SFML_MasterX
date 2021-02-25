@@ -30,8 +30,6 @@ namespace masterX
         void onEvent();
         void onUpdate();
 
-        void onCloseEvent();
-
     private:
         Ref<WindowHolder> m_window;
         WindowProps m_winProps;

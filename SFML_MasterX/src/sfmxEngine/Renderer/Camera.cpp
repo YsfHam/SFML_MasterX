@@ -24,6 +24,19 @@ namespace masterX
         focusOn(m_cameraView.getSize() / 2.f);
     }
 
+    Camera::Camera(const sf::Vector2f& renderTargetSize) : m_zoomFactor(1.f)
+    {
+        changeViewPort(sf::FloatRect(0, 0, renderTargetSize.x, renderTargetSize.y), renderTargetSize);
+        focusOn(m_cameraView.getSize() / 2.f);   
+    }
+
+    Camera::Camera(const sf::FloatRect& cameraViewPort, const sf::Vector2f& renderTargetSize)
+        : m_zoomFactor(1.f)
+    {
+        changeViewPort(cameraViewPort, renderTargetSize);
+        focusOn(m_cameraView.getSize() / 2.f);
+    }
+
     void Camera::resize(float width, float height)
     {
         resize(sf::Vector2f(width, height));
@@ -36,20 +49,23 @@ namespace masterX
     }
     void Camera::changeViewPort(const sf::FloatRect& newViewPort)
     {
-        resize(newViewPort.getSize());
-
         float windowWidth = Application::get()->windowWidth();
         float windowHeight = Application::get()->windowHeight();
 
-        float widthFactor = newViewPort.width / windowWidth;
-        float heightFactor = newViewPort.height / windowHeight;
+        changeViewPort(newViewPort, {windowWidth, windowHeight});
+    }
 
-        float leftFactor = newViewPort.left / windowWidth;
-        float topFactor = newViewPort.top / windowHeight;
+    void Camera::changeViewPort(const sf::FloatRect& newViewPort, const sf::Vector2f& renderTargetSize)
+    {
+        resize(newViewPort.getSize());
 
+        float widthFactor = newViewPort.width / renderTargetSize.x;
+        float heightFactor = newViewPort.height / renderTargetSize.y;
+
+        float leftFactor = newViewPort.left / renderTargetSize.x;
+        float topFactor = newViewPort.top / renderTargetSize.y;
 
         m_cameraView.setViewport(sf::FloatRect(leftFactor, topFactor, widthFactor, heightFactor));
-
     }
 
     void Camera::zoom(float factor)

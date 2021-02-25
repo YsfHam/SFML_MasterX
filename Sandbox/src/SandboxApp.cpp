@@ -6,9 +6,12 @@ class TestLayer : public masterX::Layer
 {
 public:
     TestLayer()
-        :
-        m_cameraControler(0.5f, 100.f, 50.f)
+        : m_cameraControler(0, 0, 0)
     {
+        sf::Vector2f targetSize(200, 200);
+        m_renderTex = masterX::createRef<sf::RenderTexture>();
+        m_renderTex->create(targetSize.x, targetSize.y);
+        m_cameraControler = masterX::CameraControler(0.5f, 150.f, 30.f);
     }
     void onAttach() override
     {
@@ -19,6 +22,7 @@ public:
         float winWidth = masterX::Application::get()->windowWidth();
         float winHeight = masterX::Application::get()->windowHeight();
         m_rect.setPosition(winWidth / 2.f, winHeight / 2.f);
+        m_cameraControler.focusOn(m_rect.getPosition());
 
         m_currentCamera = (masterX::Camera*)&m_cameraControler.getCamera();
     }
@@ -42,6 +46,12 @@ public:
                 eventHandled |= true;
             }
         }
+        else if (event.type == sf::Event::Resized)
+        {
+            m_camera.resize(event.size.width, event.size.height);
+            eventHandled |= true;
+
+        }
         eventHandled |= m_cameraControler.onEvent(event);
         return eventHandled;
     }
@@ -49,9 +59,12 @@ public:
     void onUpdate(float dt) override
     {
         m_cameraControler.update(dt);
+
         masterX::Renderer::setClearColor(sf::Color(20, 20, 20));
+        masterX::Renderer::begin();
         masterX::Renderer::setDrawingView(m_currentCamera->getView());
         masterX::Renderer::draw(m_rect);
+        masterX::Renderer::end<sf::RenderWindow>();
 
     }
 
@@ -60,6 +73,8 @@ private:
     masterX::Camera m_camera;
     masterX::Camera *m_currentCamera;
     masterX::CameraControler m_cameraControler;
+
+    masterX::Ref<sf::RenderTexture> m_renderTex;
 };
 
 class SandBoxApp : public masterX::Application

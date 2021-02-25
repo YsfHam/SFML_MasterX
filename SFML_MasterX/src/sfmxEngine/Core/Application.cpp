@@ -29,32 +29,31 @@ namespace masterX
 
     uint32_t Application::windowWidth() const
     {
-        return m_window->get().getSize().x;
+        return m_window->getWidth();
     }
 
     uint32_t Application::windowHeight() const
     {
-        return m_window->get().getSize().y;
+        return m_window->getHeight();
     }
 
     void Application::run()
     {
         MASTER_CORE_ASSERT(!m_window, "The application is already initialised !");
         initProps(m_winProps);
-        m_window = std::make_shared<WindowHolder>(m_winProps);
+        m_window = createRef<WindowHolder>(m_winProps);
 
         MASTER_CORE_ASSERT(m_window, "The window is not initialised");
-        Renderer::init(m_window);
+        Renderer::init(m_window->getRenderTarget());
 
         init();
         
         sf::Clock clock;
-        while (m_window->get().isOpen())
+        while (m_window->isOpen())
         {
             onEvent();
             m_deltaTime = clock.restart().asSeconds();
             onUpdate();
-            Renderer::display();
         }
     }
 
@@ -68,10 +67,10 @@ namespace masterX
     {
         sf::Event event;
 
-        while (m_window->get().pollEvent(event))
+        while (m_window->pollWindowEvents(event))
         {
             if (event.type == sf::Event::Closed)
-                onCloseEvent();
+                m_window->close();
 
             for (auto it = m_layerStack.rbegin(); it != m_layerStack.rend(); it++)
             {
@@ -85,10 +84,5 @@ namespace masterX
     {
         for (Layer *layer : m_layerStack)
             layer->onUpdate(m_deltaTime);
-    }
-
-    void Application::onCloseEvent()
-    {
-        m_window->get().close();
     }
 }

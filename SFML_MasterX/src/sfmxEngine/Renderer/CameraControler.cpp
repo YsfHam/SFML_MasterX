@@ -21,14 +21,40 @@ namespace masterX
         m_rotationSpeed(rotationSpeed)
     {}
 
+    CameraControler::CameraControler(float zoomAmount, float cameraSpeed, float rotationSpeed,
+                        const sf::Vector2f& targetSize)
+        : m_zoomAmount(zoomAmount), 
+        m_cameraSpeed(cameraSpeed),
+        m_rotationSpeed(rotationSpeed),
+        m_camera(targetSize)
+    {}
+
+    CameraControler::CameraControler(float zoomAmount, float cameraSpeed, float rotationSpeed,
+        const sf::FloatRect& cameraViewPort, const sf::Vector2f& targetSize)
+        : m_camera(cameraViewPort, targetSize), 
+        m_zoomAmount(zoomAmount), 
+        m_cameraSpeed(cameraSpeed),
+        m_rotationSpeed(rotationSpeed)
+    {}
+
     void CameraControler::changeCameraViewPort(const sf::FloatRect& newcameraViewPort)
     {
         m_camera.changeViewPort(newcameraViewPort);
     }
 
+    void CameraControler::changeCameraViewPort(const sf::FloatRect& newcameraViewPort, const sf::Vector2f& targetSize)
+    {
+        m_camera.changeViewPort(newcameraViewPort, targetSize);
+    }
+
     const sf::View& CameraControler::getCameraView()
     {
         return m_camera.getView();
+    }
+
+    void CameraControler::focusOn(const sf::Vector2f& target)
+    {
+        m_camera.focusOn(target);
     }
 
     bool CameraControler::onEvent(sf::Event& event)

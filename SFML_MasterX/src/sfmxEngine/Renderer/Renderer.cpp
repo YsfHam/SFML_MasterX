@@ -6,17 +6,15 @@
 
 namespace masterX
 {
-    Ref<WindowHolder> Renderer::s_window = nullptr;
     sf::Color Renderer::s_clearColor = sf::Color::Black;
-
+    Ref<sf::RenderTarget> Renderer::s_renderTarget = nullptr;
+    Ref<sf::RenderTarget> Renderer::s_defaultRenderTarget = nullptr;
     bool Renderer::s_isCleared = false;
 
-    void Renderer::init(const Ref<WindowHolder>& window)
+    void Renderer::init(const Ref<sf::RenderTarget>& target)
     {
-        MASTER_CORE_ASSERT(!s_window, "The renderer is already initialised !");
-        s_window = window;
-
-        s_window->get().setView(sf::View(sf::FloatRect(0, 0, 0, 0)));
+        MASTER_CORE_ASSERT(!s_defaultRenderTarget, "The renderer is already initialised !");
+        s_defaultRenderTarget = target;
     }
 
     void Renderer::setClearColor(const sf::Color& color)
@@ -24,17 +22,22 @@ namespace masterX
         s_clearColor = color;
     }
 
-    void Renderer::display()
+    void Renderer::begin()
     {
-        if (!s_isCleared)
-            s_window->get().clear(s_clearColor);
-        s_isCleared = false;
-        s_window->get().display();
+        begin(s_defaultRenderTarget);
+    }
+
+    void Renderer::begin(const Ref<sf::RenderTarget>& target)
+    {
+        MASTER_CORE_ASSERT(!s_renderTarget, "The target is already setup");
+
+        s_renderTarget = target;
+        s_renderTarget->setView(sf::View(sf::FloatRect(0, 0, 0, 0)));
     }
 
     void Renderer::setDrawingView(const sf::View& view)
     {
-        s_window->get().setView(view);
+        s_renderTarget->setView(view);
     }
 
     void Renderer::setDrawingView(const sf::FloatRect& drawingArea)

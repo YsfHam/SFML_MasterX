@@ -1,5 +1,9 @@
 #pragma once
 
+
+// system detection file
+#include "sfmxEngine/Core/systemDetection.hpp"
+
 // STL
 #include <vector>
 #include <stack>
