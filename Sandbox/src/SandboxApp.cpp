@@ -6,12 +6,8 @@ class TestLayer : public masterX::Layer
 {
 public:
     TestLayer()
-        : m_cameraControler(0, 0, 0)
+        : m_cameraControler(0.5f, 150.f, 30.f)
     {
-        sf::Vector2f targetSize(200, 200);
-        m_renderTex = masterX::createRef<sf::RenderTexture>();
-        m_renderTex->create(targetSize.x, targetSize.y);
-        m_cameraControler = masterX::CameraControler(0.5f, 150.f, 30.f);
     }
     void onAttach() override
     {
@@ -21,10 +17,10 @@ public:
 
         float winWidth = masterX::Application::get()->windowWidth();
         float winHeight = masterX::Application::get()->windowHeight();
-        m_rect.setPosition(winWidth / 2.f, winHeight / 2.f);
-        m_cameraControler.focusOn(m_rect.getPosition());
+        m_rect.setPosition(m_rect.getSize());
 
-        m_currentCamera = (masterX::Camera*)&m_cameraControler.getCamera();
+        m_cameraControler.useLetterBoxing = true;
+        m_cameraControler.changeSize();
     }
 
     void onDetach() override
@@ -36,23 +32,23 @@ public:
         bool eventHandled = false;
         if (event.type == sf::Event::KeyPressed)
         {
-            if (event.key.code == sf::Keyboard::C)
+            if (event.key.code == sf::Keyboard::F)
             {
-                if (m_currentCamera == &m_camera)
-                    m_currentCamera = (masterX::Camera*)&m_cameraControler.getCamera();
-                else
-                    m_currentCamera = &m_camera;
-
+                masterX::Application::get()->fullScreenMode();
+                m_cameraControler.changeSize();
                 eventHandled |= true;
             }
+            else if (event.key.code == sf::Keyboard::N)
+            {
+                masterX::Application::get()->fullScreenMode(false);
+                m_cameraControler.changeSize();
+                eventHandled |= true;
+            }
+            eventHandled |= false;
         }
-        else if (event.type == sf::Event::Resized)
-        {
-            m_camera.resize(event.size.width, event.size.height);
-            eventHandled |= true;
 
-        }
         eventHandled |= m_cameraControler.onEvent(event);
+        
         return eventHandled;
     }
 
@@ -62,19 +58,25 @@ public:
 
         masterX::Renderer::setClearColor(sf::Color(20, 20, 20));
         masterX::Renderer::begin();
-        masterX::Renderer::setDrawingView(m_currentCamera->getView());
-        masterX::Renderer::draw(m_rect);
+        masterX::Renderer::setCamera((masterX::Camera*)&m_cameraControler.getCamera());
+        //masterX::Renderer::draw(m_rect);
+        sf::CircleShape circle(5);
+        for (int y = 0; y < 50; y++)
+        {
+            for (int x = 0; x < 50; x++)
+            {
+                circle.setPosition(x * 10, y * 10);
+                circle.setFillColor(x & y ? sf::Color::Blue : sf::Color::Green);
+                masterX::Renderer::draw(circle);
+            }
+        }
         masterX::Renderer::end<sf::RenderWindow>();
 
     }
 
 private:
     sf::RectangleShape m_rect;
-    masterX::Camera m_camera;
-    masterX::Camera *m_currentCamera;
     masterX::CameraControler m_cameraControler;
-
-    masterX::Ref<sf::RenderTexture> m_renderTex;
 };
 
 class SandBoxApp : public masterX::Application
@@ -90,6 +92,10 @@ public:
         props.width = 700;
         props.height = 500;
         props.title = "SFML App";
+        props.minWidth = 200;
+        props.minHeight = 50;
+        props.fullScreen = false;
+
     }
 };
 

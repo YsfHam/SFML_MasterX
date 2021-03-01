@@ -13,6 +13,8 @@
 #include <map>
 #include <string>
 #include <memory>
+#include <utility>
+#include <limits>
 
 
 // SFML library

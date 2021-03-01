@@ -15,26 +15,22 @@ namespace masterX
         float windowHeight = Application::get()->windowHeight();
 
         changeViewPort(sf::FloatRect(0, 0, windowWidth, windowHeight));
-        focusOn(m_cameraView.getSize() / 2.f);
     }
 
     Camera::Camera(const sf::FloatRect& cameraViewPort) : m_zoomFactor(1.f)
     {
         changeViewPort(cameraViewPort);
-        focusOn(m_cameraView.getSize() / 2.f);
     }
 
     Camera::Camera(const sf::Vector2f& renderTargetSize) : m_zoomFactor(1.f)
     {
         changeViewPort(sf::FloatRect(0, 0, renderTargetSize.x, renderTargetSize.y), renderTargetSize);
-        focusOn(m_cameraView.getSize() / 2.f);   
     }
 
     Camera::Camera(const sf::FloatRect& cameraViewPort, const sf::Vector2f& renderTargetSize)
         : m_zoomFactor(1.f)
     {
         changeViewPort(cameraViewPort, renderTargetSize);
-        focusOn(m_cameraView.getSize() / 2.f);
     }
 
     void Camera::resize(float width, float height)
@@ -58,6 +54,8 @@ namespace masterX
     void Camera::changeViewPort(const sf::FloatRect& newViewPort, const sf::Vector2f& renderTargetSize)
     {
         resize(newViewPort.getSize());
+        focusOn(m_cameraView.getSize() / 2.f);
+        m_renderTargetSize = renderTargetSize;
 
         float widthFactor = newViewPort.width / renderTargetSize.x;
         float heightFactor = newViewPort.height / renderTargetSize.y;
@@ -89,6 +87,27 @@ namespace masterX
         m_cameraView.rotate(rotation);
     }
 
+    void Camera::letterBoxEffect(const sf::Vector2f& rendertargetSize)
+    {
+        auto size = sf::Vector2f(1, 1);
+        auto pos = sf::Vector2f(0, 0);
+
+        float renderTargetRatio = rendertargetSize.x / rendertargetSize.y;
+        float viewRatio = (float)m_cameraView.getSize().x / (float)m_cameraView.getSize().y;
+
+        if (renderTargetRatio >= viewRatio)
+        {
+            size.x = viewRatio / renderTargetRatio;
+            pos.x = (1 - size.x) / 2.f;
+        }
+        else
+        {
+            size.y = renderTargetRatio / viewRatio;
+            pos.y = (1 - size.y) / 2.f;
+        }
+        m_cameraView.setViewport(sf::FloatRect(pos.x, pos.y, size.x, size.y));
+    }
+    
     const sf::View& Camera::getView()
     {
         return m_cameraView;

@@ -37,17 +37,18 @@ namespace masterX
         return m_window->getHeight();
     }
 
+    void Application::fullScreenMode(bool fullScreen)
+    {
+        if (fullScreen && !isFullScreenMode())
+            m_window->setFullScreenMode();
+        else if (m_window->isFullScreen() && !fullScreen)
+            m_window->setWindowedMode();
+    }
+
     void Application::run()
     {
-        MASTER_CORE_ASSERT(!m_window, "The application is already initialised !");
-        initProps(m_winProps);
-        m_window = createRef<WindowHolder>(m_winProps);
+        initAppSettings();
 
-        MASTER_CORE_ASSERT(m_window, "The window is not initialised");
-        Renderer::init(m_window->getRenderTarget());
-
-        init();
-        
         sf::Clock clock;
         while (m_window->isOpen())
         {
@@ -72,6 +73,17 @@ namespace masterX
             if (event.type == sf::Event::Closed)
                 m_window->close();
 
+            else if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)
+                m_window->close();
+            
+            else if (event.type == sf::Event::Resized)
+            {
+                m_window->resizeEvent();
+
+                event.size.width = windowWidth();
+                event.size.height = windowHeight();
+            }
+
             for (auto it = m_layerStack.rbegin(); it != m_layerStack.rend(); it++)
             {
                 if ((*it)->onEvent(event))
@@ -84,5 +96,18 @@ namespace masterX
     {
         for (Layer *layer : m_layerStack)
             layer->onUpdate(m_deltaTime);
+    }
+
+    void Application::initAppSettings()
+    {
+        MASTER_CORE_ASSERT(!m_window, "The application is already initialised !");
+        WindowProps props;
+        initProps(props);
+        m_window = createRef<WindowHolder>(props);
+
+        MASTER_CORE_ASSERT(m_window, "The window is not initialised");
+        Renderer::init(m_window->getRenderTarget());
+
+        init();
     }
 }

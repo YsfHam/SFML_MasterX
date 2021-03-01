@@ -4,6 +4,7 @@
 
 #include "CameraControler.hpp"
 #include "sfmxEngine/Core/Log.hpp"
+#include "sfmxEngine/Core/Application.hpp"
 
 namespace masterX
 {
@@ -61,7 +62,7 @@ namespace masterX
     {
         if (event.type == sf::Event::Resized)
         {
-            m_camera.resize(event.size.width, event.size.height);
+            changeSize(event.size.width, event.size.height);
             return true;
         }
         if (event.type == sf::Event::MouseWheelScrolled)
@@ -102,5 +103,18 @@ namespace masterX
             m_camera.zoom(m_zoomAmount);
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
             m_camera.zoom(1.f / m_zoomAmount);
+    }
+
+    void CameraControler::changeSize()
+    {
+        changeSize(Application::get()->windowWidth(), Application::get()->windowHeight());
+    }
+
+    void CameraControler::changeSize(uint32_t width, uint32_t height)
+    {
+        if (!useLetterBoxing)
+            m_camera.resize(width, height);
+        else
+            m_camera.letterBoxEffect(sf::Vector2f(width, height));
     }
 }

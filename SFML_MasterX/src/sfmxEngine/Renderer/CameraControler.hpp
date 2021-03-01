@@ -25,6 +25,13 @@ namespace masterX
 
         bool onEvent(sf::Event& event);
         void update(float dt);
+
+        void changeSize();
+        void changeSize(uint32_t width, uint32_t height);
+    
+    public:
+        bool useLetterBoxing = false;
+
     private:
         Camera m_camera;
         float m_zoomAmount;

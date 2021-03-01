@@ -20,11 +20,13 @@ namespace masterX
         void focusOn(const sf::Vector2f& position);
         void move(const sf::Vector2f& offset);
         void rotate(float rotation);
-
+        void letterBoxEffect(const sf::Vector2f& rendertargetSize);
         const sf::View& getView();
+
     private:
         sf::View m_cameraView;
-
         float m_zoomFactor;
+        sf::Vector2f m_renderTargetSize;
+        
     };
 }

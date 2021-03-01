@@ -18,6 +18,10 @@ namespace masterX
 
         uint32_t windowWidth() const;
         uint32_t windowHeight() const;
+
+        void fullScreenMode(bool fullScreen = true);
+
+        bool isFullScreenMode() const { return m_window->isFullScreen(); }
         
         static Application* get();
 
@@ -30,13 +34,15 @@ namespace masterX
         void onEvent();
         void onUpdate();
 
+        void initAppSettings();
+
     private:
         Ref<WindowHolder> m_window;
-        WindowProps m_winProps;
         LayerStack m_layerStack;
         float m_deltaTime;
         static Application *s_instance;
     };
 
+    // To be defined by the client
     Application* createApplication();
 }

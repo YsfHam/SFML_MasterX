@@ -3,6 +3,7 @@
 #include "sfmxEngine/Core/WindowHolder.hpp"
 #include "sfmxEngine/Core/Base.hpp"
 #include "PCH/sfmxpch.hpp"
+#include "Camera.hpp"
 
 namespace masterX
 {
@@ -22,9 +23,9 @@ namespace masterX
                 s_renderTarget->clear(s_clearColor);
                 s_isCleared = true;
             }
-
             s_renderTarget->draw(std::forward<Args...>(args...));
         }
+
         template<typename RenderTargetType>
         static void end()
         {
@@ -34,6 +35,7 @@ namespace masterX
             ((RenderTargetType*)s_renderTarget.get())->display();
 
             s_renderTarget = nullptr;
+            s_currentCamera = nullptr;
         }
 
         template<typename RenderTargetType, typename Func>
@@ -45,18 +47,16 @@ namespace masterX
             ((RenderTargetType*)s_renderTarget.get())->func();
 
             s_renderTarget = nullptr;
+            s_currentCamera = nullptr;
         }
-
-        static void setDrawingView(const sf::View& view);
-        static void setDrawingView(const sf::FloatRect& drawingArea);
-        static void setDrawingView(float startX, float startY, float width, float height);
+        static void setCamera(Camera* camera);
 
     private:
         static sf::Color s_clearColor;
 
         static Ref<sf::RenderTarget> s_renderTarget;
         static Ref<sf::RenderTarget> s_defaultRenderTarget;
-
+        static Camera *s_currentCamera;
         static bool s_isCleared;
     };
 }

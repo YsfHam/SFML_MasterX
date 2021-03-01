@@ -10,6 +10,7 @@ namespace masterX
     Ref<sf::RenderTarget> Renderer::s_renderTarget = nullptr;
     Ref<sf::RenderTarget> Renderer::s_defaultRenderTarget = nullptr;
     bool Renderer::s_isCleared = false;
+    Camera *Renderer::s_currentCamera = nullptr;
 
     void Renderer::init(const Ref<sf::RenderTarget>& target)
     {
@@ -35,18 +36,9 @@ namespace masterX
         s_renderTarget->setView(sf::View(sf::FloatRect(0, 0, 0, 0)));
     }
 
-    void Renderer::setDrawingView(const sf::View& view)
+    void Renderer::setCamera(Camera* camera)
     {
-        s_renderTarget->setView(view);
-    }
-
-    void Renderer::setDrawingView(const sf::FloatRect& drawingArea)
-    {
-        setDrawingView(sf::View(drawingArea));
-    }
-
-    void Renderer::setDrawingView(float startX, float startY, float width, float height)
-    {
-        setDrawingView(sf::FloatRect(startX, startY, width, height));
+        s_currentCamera = camera;
+        s_renderTarget->setView(s_currentCamera->getView());
     }
 }
