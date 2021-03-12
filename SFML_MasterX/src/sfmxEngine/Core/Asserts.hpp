@@ -3,7 +3,6 @@
 // This file will contain all global definition and types for the engine
 
 #include "Log.hpp"
-#include "Types.hpp"
 
 #ifdef MASTER_DEBUG
 #include <assert.h>
