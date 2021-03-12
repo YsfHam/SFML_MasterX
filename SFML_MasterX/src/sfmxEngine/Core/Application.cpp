@@ -3,7 +3,7 @@
 #endif
 #include "Application.hpp"
 
-#include "Base.hpp"
+#include "Asserts.hpp"
 
 
 namespace masterX
@@ -109,5 +109,14 @@ namespace masterX
         Renderer::init(m_window->getRenderTarget());
 
         init();
+    }
+
+    void Application::shutdown()
+    {
+        m_window->onCloseEvent = [](){
+            return true;
+        };
+
+        m_window->close();
     }
 }

@@ -28,14 +28,15 @@ namespace masterX
 
         void changeSize();
         void changeSize(uint32_t width, uint32_t height);
-    
-    public:
-        bool useLetterBoxing = false;
+
+        void useLetterBoxingEffect(bool use = true);
+        void useLetterBoxingEffect(uint32_t width, uint32_t height, bool use = true);
 
     private:
         Camera m_camera;
         float m_zoomAmount;
         float m_cameraSpeed;
         float m_rotationSpeed;
+        bool m_useLetterBoxing = false;
     };
 }

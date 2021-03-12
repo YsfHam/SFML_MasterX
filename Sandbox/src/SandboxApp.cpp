@@ -11,16 +11,27 @@ public:
     }
     void onAttach() override
     {
-        m_rect.setFillColor(sf::Color::Red);
-        m_rect.setSize(sf::Vector2f(20.f, 20.f));
-        m_rect.setOrigin(m_rect.getSize() / 2.f);
+        m_cameraControler.useLetterBoxingEffect();
 
-        float winWidth = masterX::Application::get()->windowWidth();
-        float winHeight = masterX::Application::get()->windowHeight();
-        m_rect.setPosition(m_rect.getSize());
+        masterX::Application::get()->setOnCloseEvent([](){
+            MASTER_WARN("You are trying to quit the app");
+            return false;
+        });
 
-        m_cameraControler.useLetterBoxing = true;
-        m_cameraControler.changeSize();
+        sf::Vector2<uint32_t> count(10, 10);
+        sf::Vector2f startPos(0, 0);
+        sf::CircleShape circle(5);
+        sf::Vector2f dist(10, 10);
+        for (uint32_t y = 0; y < count.y; y++)
+        {
+            for (uint32_t x = 0; x < count.x; x++)
+            {
+                circle.setFillColor(x & y ? sf::Color::Green : sf::Color::Blue);
+                circle.setPosition(sf::Vector2f(x * dist.x, y * dist.y) + startPos);
+
+                m_circles.emplace_back(circle);
+            }
+        }
     }
 
     void onDetach() override
@@ -30,6 +41,11 @@ public:
     bool onEvent(sf::Event& event) override
     {
         bool eventHandled = false;
+        if (event.type == sf::Event::Closed)
+        {
+            masterX::Application::get()->shutdown();
+            eventHandled |= true;
+        }
         if (event.type == sf::Event::KeyPressed)
         {
             if (event.key.code == sf::Keyboard::F)
@@ -55,33 +71,32 @@ public:
     void onUpdate(float dt) override
     {
         m_cameraControler.update(dt);
-
-        masterX::Renderer::setClearColor(sf::Color(20, 20, 20));
+        float framerate = 1.f / dt;
+        if (framerate > 30.f)
+            MASTER_INFO("Good frame rate {0}", framerate);
+        else if (framerate <= 30.f && framerate > 10.f)
+            MASTER_WARN("Bad frame rate {0}", framerate);
+        else
+            MASTER_ERROR("You cannot play with this, can you? {0}", framerate);
         masterX::Renderer::begin();
         masterX::Renderer::setCamera((masterX::Camera*)&m_cameraControler.getCamera());
-        //masterX::Renderer::draw(m_rect);
-        sf::CircleShape circle(5);
-        for (int y = 0; y < 50; y++)
+        for (sf::CircleShape& circle : m_circles)
         {
-            for (int x = 0; x < 50; x++)
-            {
-                circle.setPosition(x * 10, y * 10);
-                circle.setFillColor(x & y ? sf::Color::Blue : sf::Color::Green);
-                masterX::Renderer::draw(circle);
-            }
+            masterX::Renderer::draw(circle);              
         }
-        masterX::Renderer::end<sf::RenderWindow>();
+        masterX::Renderer::end();
 
     }
 
 private:
-    sf::RectangleShape m_rect;
     masterX::CameraControler m_cameraControler;
+
+    std::vector<sf::CircleShape> m_circles;
 };
 
 class SandBoxApp : public masterX::Application
 {
-public:
+private:
     void init() override
     {
         pushLayer(new TestLayer);
@@ -95,6 +110,8 @@ public:
         props.minWidth = 200;
         props.minHeight = 50;
         props.fullScreen = false;
+        props.frameRate = 120;
+        props.vsync = false;
 
     }
 };

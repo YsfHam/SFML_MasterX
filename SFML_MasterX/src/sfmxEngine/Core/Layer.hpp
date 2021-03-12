@@ -14,6 +14,5 @@ namespace masterX
         // This function handle events, returns true if a event is handled false otherwise
         virtual bool onEvent(sf::Event& event) { return false; }
         virtual void onUpdate(float dt) {}
-    private:
     };
 }

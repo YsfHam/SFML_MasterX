@@ -1,7 +1,8 @@
 #pragma once
 
 #include <PCH/sfmxpch.hpp>
-#include "Base.hpp"
+#include "Asserts.hpp"
+#include "Types.hpp"
 
 namespace masterX
 {
@@ -21,6 +22,10 @@ namespace masterX
 
         uint32_t maxWidth = -1;
         uint32_t maxHeight = -1;
+
+        sf::Vector2<int32_t> position = {0, 0};
+
+        bool vsync = true;
     };
 
     class WindowHolder
@@ -32,8 +37,6 @@ namespace masterX
         bool pollWindowEvents(sf::Event& event);
         void close();
         bool isOpen();
-
-        void create();
 
         uint32_t getWidth() const { return m_window->getSize().x; }
         uint32_t getHeight() const { return m_window->getSize().y; }
@@ -49,6 +52,9 @@ namespace masterX
 
     public:
         std::function<bool()> onCloseEvent;
+
+    private:
+        void setSettings();
 
     private:
         Ref<sf::RenderWindow> m_window;

@@ -21,9 +21,18 @@ namespace masterX
         {
             m_window = createRef<sf::RenderWindow>(sf::VideoMode(props.width, props.height), 
             props.title, props.style, props.settings);
+
+             auto winPos = m_window->getPosition();
+            if (props.position.x)
+            winPos.x = props.position.x;
+
+            if (props.position.y)
+            winPos.y = props.position.y;
+
+            m_window->setPosition(winPos);
         }
 
-        m_window->setFramerateLimit(props.frameRate);
+        setSettings();
 
         onCloseEvent = [](){
             return true;
@@ -65,20 +74,33 @@ namespace masterX
 
     void WindowHolder::setFullScreenMode()
     {
+        if (m_isFullScreen)
+            return;
 
-        auto videoMode = sf::VideoMode::getDesktopMode();
-        sf::ContextSettings settings = m_window->getSettings();
-        m_window->create(videoMode, m_props.title, 
-        sf::Style::Fullscreen | sf::Style::Close, settings);
+        // track current size and position
+        m_props.position = m_window->getPosition();
+        m_props.width = m_window->getSize().x;
+        m_props.height = m_window->getSize().y;
+
+        m_window->create(sf::VideoMode::getDesktopMode(), m_props.title, 
+        sf::Style::Fullscreen | sf::Style::Close);
         m_isFullScreen = true;
+
+        setSettings();
     }
 
     void WindowHolder::setWindowedMode()
     {
+        if (!m_isFullScreen)
+            return;
         m_window->create(sf::VideoMode(m_props.width, m_props.height), 
             m_props.title, m_props.style, m_props.settings);
+        setSettings();
 
         m_isFullScreen = false;
+
+        m_window->setPosition(m_props.position);
+        m_window->setSize({ m_props.width, m_props.height });
     }
 
     void WindowHolder::resizeEvent()
@@ -96,5 +118,10 @@ namespace masterX
             height = m_props.maxHeight;
 
         setSize(width, height);
+    }
+    void WindowHolder::setSettings()
+    {
+        m_window->setFramerateLimit(m_props.frameRate);
+        m_window->setVerticalSyncEnabled(m_props.vsync);
     }
 }

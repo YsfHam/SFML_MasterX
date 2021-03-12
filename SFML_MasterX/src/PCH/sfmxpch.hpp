@@ -15,6 +15,7 @@
 #include <memory>
 #include <utility>
 #include <limits>
+#include <tuple>
 
 
 // SFML library

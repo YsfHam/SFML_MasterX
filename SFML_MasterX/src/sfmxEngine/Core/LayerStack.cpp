@@ -3,7 +3,7 @@
 #endif
 
 #include "LayerStack.hpp"
-#include "Base.hpp"
+#include "Asserts.hpp"
 
 namespace masterX
 {

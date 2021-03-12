@@ -31,7 +31,6 @@ namespace masterX
     void Renderer::begin(const Ref<sf::RenderTarget>& target)
     {
         MASTER_CORE_ASSERT(!s_renderTarget, "The target is already setup");
-
         s_renderTarget = target;
         s_renderTarget->setView(sf::View(sf::FloatRect(0, 0, 0, 0)));
     }

@@ -2,9 +2,10 @@
 #include <PCH/sfmxpch.hpp>
 
 #include "WindowHolder.hpp"
-#include "Base.hpp"
+#include "Asserts.hpp"
 #include "LayerStack.hpp"
 #include "sfmxEngine/Renderer/Renderer.hpp"
+#include "Types.hpp"
 
 namespace masterX
 {
@@ -19,9 +20,16 @@ namespace masterX
         uint32_t windowWidth() const;
         uint32_t windowHeight() const;
 
+        sf::Vector2<uint32_t> windowSize() const { return { windowWidth(), windowHeight() }; }
+
         void fullScreenMode(bool fullScreen = true);
+        void shutdown();
 
         bool isFullScreenMode() const { return m_window->isFullScreen(); }
+
+        void closeApp() { m_window->close(); }
+        void setOnCloseEvent(std::function<bool()> funcEvent) { m_window->onCloseEvent = funcEvent; }
+
         
         static Application* get();
 

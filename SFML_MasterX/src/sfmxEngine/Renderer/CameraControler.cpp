@@ -112,9 +112,21 @@ namespace masterX
 
     void CameraControler::changeSize(uint32_t width, uint32_t height)
     {
-        if (!useLetterBoxing)
+        if (!m_useLetterBoxing)
             m_camera.resize(width, height);
         else
             m_camera.letterBoxEffect(sf::Vector2f(width, height));
+    }
+
+    void CameraControler::useLetterBoxingEffect(bool use)
+    {
+        m_useLetterBoxing = use;
+        changeSize();
+    }
+
+    void CameraControler::useLetterBoxingEffect(uint32_t width, uint32_t height, bool use)
+    {
+        m_useLetterBoxing = use;
+        changeSize(width, height);
     }
 }
