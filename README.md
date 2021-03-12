@@ -184,7 +184,8 @@ static void draw(Func func, Drawable& drawable, const sf::RenderStates& states =
 
 ```C++
 template<typename Drawable>
-static void draw(Drawable& drawable, const sf::RenderStates& states = sf::RenderStates::Default)```
+static void draw(Drawable& drawable, const sf::RenderStates& states = sf::RenderStates::Default)
+```
 
 ```C++
 static void draw(sf::Vertex *vertices, size_t count, const sf::PrimitiveType& type, const sf::RenderStates& states = sf::RenderStates::Default)
