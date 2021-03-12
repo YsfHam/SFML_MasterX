@@ -179,7 +179,8 @@ To see something you need a pointer to a `Camera` object
 
 ```C++
 template<typename Func, typename Drawable>
-static void draw(Func func, Drawable& drawable, const sf::RenderStates& states = sf::RenderStates::Default)```
+static void draw(Func func, Drawable& drawable, const sf::RenderStates& states = sf::RenderStates::Default)
+```
 
 ```C++
 template<typename Drawable>
